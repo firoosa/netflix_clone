@@ -3,7 +3,6 @@ services:
   - type: web
     name: netflix-backend
     env: python
-    plan: free
     region: oregon
     buildCommand: cd backend && pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --no-input
     startCommand: cd backend && gunicorn netflix_backend.wsgi:application --bind 0.0.0.0:$PORT
@@ -23,7 +22,6 @@ services:
   - type: web
     name: netflix-frontend
     env: static
-    plan: free
     buildCommand: npm install && npm run build
     staticPublishPath: ./dist
     envVars:
