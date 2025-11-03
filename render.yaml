@@ -1,0 +1,43 @@
+services:
+  # PostgreSQL Database
+  - type: pg
+    name: netflix-db
+    plan: free
+    databaseName: netflix_db
+    user: netflix_user
+
+  # Django Backend Service
+  - type: web
+    name: netflix-backend
+    env: python
+    plan: free
+    region: oregon
+    buildCommand: cd backend && pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --no-input
+    startCommand: cd backend && gunicorn netflix_backend.wsgi:application --bind 0.0.0.0:$PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: netflix-db
+          property: connectionString
+      - key: ALLOWED_HOSTS
+        value: netflix-backend.onrender.com
+      - key: CORS_ALLOWED_ORIGINS
+        value: https://netflix-frontend.onrender.com
+
+  # React Frontend (Static Site)
+  - type: web
+    name: netflix-frontend
+    env: static
+    plan: free
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://netflix-backend.onrender.com/api
+
