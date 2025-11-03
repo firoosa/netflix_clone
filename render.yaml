@@ -1,11 +1,4 @@
 services:
-  # PostgreSQL Database
-  - type: pg
-    name: netflix-db
-    plan: free
-    databaseName: netflix_db
-    user: netflix_user
-
   # Django Backend Service
   - type: web
     name: netflix-backend
@@ -21,10 +14,6 @@ services:
         generateValue: true
       - key: DEBUG
         value: "False"
-      - key: DATABASE_URL
-        fromDatabase:
-          name: netflix-db
-          property: connectionString
       - key: ALLOWED_HOSTS
         value: netflix-backend.onrender.com
       - key: CORS_ALLOWED_ORIGINS
@@ -40,4 +29,3 @@ services:
     envVars:
       - key: VITE_API_URL
         value: https://netflix-backend.onrender.com/api
-
