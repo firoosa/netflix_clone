@@ -5,7 +5,12 @@ Django settings for netflix_backend project.
 from pathlib import Path
 import os
 from datetime import timedelta
-import dj_database_url
+
+# Try to import dj_database_url, but it's optional for local development
+try:
+    import dj_database_url
+except ImportError:
+    dj_database_url = None
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -86,7 +91,7 @@ WSGI_APPLICATION = 'netflix_backend.wsgi.application'
 
 # Use DATABASE_URL if available (for platforms like Render, Railway, Heroku)
 DATABASE_URL = os.environ.get('DATABASE_URL')
-if DATABASE_URL:
+if DATABASE_URL and dj_database_url:
     DATABASES = {
         'default': dj_database_url.config(
             default=DATABASE_URL,
@@ -95,17 +100,29 @@ if DATABASE_URL:
         )
     }
 else:
-    # Fallback to individual database settings
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.environ.get('DB_NAME', 'netflix_db'),
-            'USER': os.environ.get('DB_USER', 'postgres'),
-            'PASSWORD': os.environ.get('DB_PASSWORD', '1234'),
-            'HOST': os.environ.get('DB_HOST', 'localhost'),
-            'PORT': os.environ.get('DB_PORT', '5432'),
+    # For local development, use SQLite (no PostgreSQL setup needed)
+    # For production, set DB_USE_SQLITE=False and configure PostgreSQL
+    USE_SQLITE = os.environ.get('DB_USE_SQLITE', 'True') == 'True'
+    
+    if USE_SQLITE:
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': BASE_DIR / 'db.sqlite3',
+            }
         }
-    }
+    else:
+        # PostgreSQL settings (requires psycopg2-binary)
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.postgresql',
+                'NAME': os.environ.get('DB_NAME', 'netflix_db'),
+                'USER': os.environ.get('DB_USER', 'postgres'),
+                'PASSWORD': os.environ.get('DB_PASSWORD', '1234'),
+                'HOST': os.environ.get('DB_HOST', 'localhost'),
+                'PORT': os.environ.get('DB_PORT', '5432'),
+            }
+        }
 
 
 # Password validation
