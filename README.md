@@ -97,7 +97,10 @@ Backend will run at: `http://localhost:8000`
 ### 3. Frontend Setup
 
 ```bash
-# From the root directory (not backend folder)
+# Navigate to frontend folder
+cd frontend
+
+# Install dependencies
 npm install
 
 # Create .env file
@@ -126,26 +129,29 @@ Netflix/
 │   ├── manage.py
 │   ├── requirements.txt
 │   └── README.md
-├── src/                       # React Frontend
-│   ├── components/           # React components
-│   │   ├── Banner.jsx
-│   │   ├── Header.jsx
-│   │   └── MovieRow.jsx
-│   ├── context/             # React Context
-│   │   └── AuthContext.jsx
-│   ├── features/            # Redux features
-│   │   └── movies/
-│   │       └── movieSlice.js
-│   ├── pages/               # Page components
-│   │   ├── Home.jsx
-│   │   ├── Login.jsx
-│   │   └── Register.jsx
-│   ├── services/            # API services
-│   │   └── api.js
-│   ├── App.jsx
-│   └── main.jsx
-├── package.json
-├── vite.config.js
+├── frontend/                   # React Frontend
+│   ├── src/
+│   │   ├── components/       # React components
+│   │   │   ├── Banner.jsx
+│   │   │   ├── Header.jsx
+│   │   │   └── MovieRow.jsx
+│   │   ├── context/          # React Context
+│   │   │   └── AuthContext.jsx
+│   │   ├── features/         # Redux features
+│   │   │   └── movies/
+│   │   │       └── movieSlice.js
+│   │   ├── pages/            # Page components
+│   │   │   ├── Home.jsx
+│   │   │   ├── Login.jsx
+│   │   │   └── Register.jsx
+│   │   ├── services/         # API services
+│   │   │   └── api.js
+│   │   ├── App.jsx
+│   │   └── main.jsx
+│   ├── public/               # Static assets
+│   ├── package.json
+│   ├── vite.config.js
+│   └── index.html
 ├── MIGRATION_GUIDE.md        # Firebase to Django migration guide
 └── README.md                 # This file
 ```
@@ -164,7 +170,7 @@ DB_HOST=localhost
 DB_PORT=5432
 ```
 
-### Frontend (.env in root/)
+### Frontend (.env in frontend/)
 
 ```env
 VITE_API_URL=http://localhost:8000/api
