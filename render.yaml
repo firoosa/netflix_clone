@@ -16,7 +16,7 @@ services:
       - key: ALLOWED_HOSTS
         value: netflix-clone-8y9y.onrender.com
       - key: CORS_ALLOWED_ORIGINS
-        value: https://netflix-frontend.onrender.com
+        value: https://netflix-clone-frontend-92tv.onrender.com
 
   # React Frontend (Static Site)
   - type: web
