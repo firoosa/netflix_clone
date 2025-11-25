@@ -29,11 +29,15 @@ const Register = () => {
       let errorMessage = "Failed to register. Please try again.";
       
       if (err.email) {
-        errorMessage = err.email[0];
+        errorMessage = Array.isArray(err.email) ? err.email[0] : err.email;
       } else if (err.password) {
-        errorMessage = err.password[0];
+        errorMessage = Array.isArray(err.password) ? err.password[0] : err.password;
       } else if (err.error) {
-        errorMessage = err.error;
+        errorMessage = Array.isArray(err.error) ? err.error[0] : err.error;
+      } else if (err.message) {
+        errorMessage = err.message;
+      } else if (typeof err === 'string') {
+        errorMessage = err;
       }
       
       setError(errorMessage);

@@ -3,6 +3,9 @@ import axios from 'axios';
 // Base API URL - change this to your Django backend URL
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
+// Log API URL for debugging (remove in production if needed)
+console.log('API URL:', API_URL);
+
 // Create axios instance
 const api = axios.create({
   baseURL: API_URL,
@@ -29,6 +32,25 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
+    // Log all API errors for debugging
+    if (error.response) {
+      console.error('API Error Response:', {
+        status: error.response.status,
+        data: error.response.data,
+        url: error.config?.url,
+        baseURL: error.config?.baseURL,
+        fullURL: error.config?.baseURL + error.config?.url,
+      });
+    } else if (error.request) {
+      console.error('API Request Error (no response):', {
+        message: error.message,
+        url: error.config?.url,
+        baseURL: error.config?.baseURL,
+      });
+    } else {
+      console.error('API Error:', error.message);
+    }
+
     const originalRequest = error.config;
 
     if (error.response?.status === 401 && !originalRequest._retry) {
@@ -80,7 +102,14 @@ export const authAPI = {
       
       return response.data;
     } catch (error) {
-      throw error.response?.data || error.message;
+      console.error('Register API Error:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+        url: error.config?.url,
+        baseURL: error.config?.baseURL,
+      });
+      throw error.response?.data || { error: error.message };
     }
   },
 
@@ -101,7 +130,14 @@ export const authAPI = {
       
       return response.data;
     } catch (error) {
-      throw error.response?.data || error.message;
+      console.error('Login API Error:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+        url: error.config?.url,
+        baseURL: error.config?.baseURL,
+      });
+      throw error.response?.data || { error: error.message };
     }
   },
 

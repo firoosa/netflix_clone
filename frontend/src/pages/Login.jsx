@@ -21,7 +21,16 @@ const Login = () => {
       navigate("/home");
     } catch (err) {
       console.error("Login error:", err);
-      setError(err.error || "Failed to login. Please check your credentials.");
+      // Show more detailed error message
+      let errorMessage = "Failed to login. Please check your credentials.";
+      if (err.error) {
+        errorMessage = err.error;
+      } else if (err.message) {
+        errorMessage = err.message;
+      } else if (typeof err === 'string') {
+        errorMessage = err;
+      }
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
